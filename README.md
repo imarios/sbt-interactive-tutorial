@@ -9,10 +9,10 @@ This tutorial targets anyone that wants to learn new (and often hidden) features
 
 **Q:** Why sbt? 
 
-From my personal experience I found sbt to be great for the following:
-(a) it is interactive and can be used inside a , 
-(b) that you can write Scala to define your build tasks, and
-(c) incremental compilation.  
+1. It is interactive and used within a shell, 
+2. its build tasks are written in Scala, and
+3. it supports incremental compilation.  
+
 The first makes it easier to experiment with new settings and execute/inspect your 
 tasks instantly;  the second gives you the power of a programming language to define 
 and customize all your build, compile, test and deploy tasks; finally, the third 
@@ -257,7 +257,7 @@ Here we use inspect to learn about the *name* setting we set in our `build.sbt` 
  2.  [info] Description:
  3.  [info] 	Project name.
  4.  [info] Provided by:
- 5.  [info] 	{file:/Users/xyz/sbt-turorial/}sbt-turorial/*:name
+ 5.  [info] 	{file:/Users/xyz/sbt-turorial/}sbt-turorial/ *:name
  6.  [info] Defined at:
  7.  [info] 	/Users/xyz/sbt-turorial/build.sbt:1
  8.  [info] Reverse dependencies:
@@ -293,9 +293,9 @@ Lines 13-16 we will cover later in more detail.
 12. [info] 	compile:sources
 13. [info] 	*:sources
 14. [info] 	{.}/compile:sources
-15. [info] 	{.}/*:sources
+15. [info] 	{.}/ *:sources
 16. [info] 	*/compile:sources
-17. [info] 	*/*:sources
+17. [info] 	*/ *:sources
 18. [info] Related:
 19. [info] 	test:sources
 ```
@@ -313,15 +313,15 @@ Finally, here is the inspect on the custom task (genConfFile) we created before:
 [info] Description:
 [info] 	Creates a dummy configuration file
 [info] Provided by:
-[info] 	{file:/Users/xyz/sbt-turorial/}sbt-turorial/*:genConfFile
+[info] 	{file:/Users/xyz/sbt-turorial/}sbt-turorial/ *:genConfFile
 [info] Defined at:
 [info] 	/Users/xyz/sbt-turorial/build.sbt:16
 [info] Dependencies:
 [info] 	*:confFileName
 [info] Delegates:
 [info] 	*:genConfFile
-[info] 	{.}/*:genConfFile
-[info] 	*/*:genConfFile
+[info] 	{.}/ *:genConfFile
+[info] 	*/ *:genConfFile
 ```
 
 `Unit` here means that our task does not have a return value. 
@@ -467,23 +467,27 @@ This essentially says: execute from project X (first dimension) and configuratio
 the run task (third dimension). This will execute the main function found in the compile 
 (under main/src folder) code of project X. 
 
-
-    > projectX/compile:run
+```scala
+projectX/compile:run
+```
 
 Similarly you can say execute run in the Test configuration of project X. This will now execute the main method (say you have one defined) that is under the test/src folder. 
 
-    > projectX/test:run
-
+```scala
+projectX/test:run
+```
  
 Now, tasks also have keys (internal configuration variables). For example: 
 
-    > show projectX/compile:compile::sources
+```scala
+show projectX/compile:compile::sources
+```
 
 This will show the source files used by the compile task of Project-X's Compile configuration (when you compile just your code, not the tests). 
  
-
-    > show projectX/test:compile::sources
-
+```scala
+show projectX/test:compile::sources
+```
  
 This will show the source files used by the compile task of Project-X's Test configuration (when you compile just your test files).
 
@@ -492,12 +496,15 @@ This will show the source files used by the compile task of Project-X's Test con
 sbt has different convention for naming tasks and scopes while you are writing in its DSL 
 (inside .sbt files) and while executing tasks interactively via the sbt cli. 
 
-    projectX/test:compile::sources
+```scala
+projectX/test:compile::sources
+```
 
 translates to 
 
-    sources in (Test,compile) in projectX
-
+```scala
+sources in (Test,compile) in projectX
+```
  
 sbt has a lot of default scopes. For example, if you just enter sbt and type `compile`, 
 it will actually execute the compile task under the Compile configuration of the Root project.  
